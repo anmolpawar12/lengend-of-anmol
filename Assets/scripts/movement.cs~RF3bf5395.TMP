@@ -1,0 +1,103 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Assertions;
+using UnityEngine.EventSystems;
+
+public class movement : MonoBehaviour
+{
+    public float movespeed = 4f;
+    public CharacterController controller;
+    public Animator ani;
+    public LayerMask layerMask;
+    private Vector3 currentLookTarget = Vector3.zero;
+    public Transform cam;
+    public float turnSmoothtime = 0.1f;
+    float trunsmooth;
+    public Transform player;
+
+
+
+
+
+
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+
+
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+        Vector3 move = Vector3.left * x + z * Vector3.forward;
+        controller.Move(move * movespeed * Time.deltaTime);
+        if (move == Vector3.zero)
+        {
+            ani.SetBool("iswalking", false);
+           
+        }
+        else
+        {
+            ani.SetBool("iswalking", true);
+
+        }
+        if (Input.GetMouseButton(0))
+        {
+            ani.Play("chop");
+
+        }
+        if (move.magnitude >= 0.1f)
+        {
+            float targetangle = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetangle, ref trunsmooth, turnSmoothtime);
+            player.rotation = Quaternion.Euler(0f, angle, 0f);
+
+        }
+
+        
+        
+
+
+
+
+
+
+    }
+    private void FixedUpdate()
+    {
+        RaycastHit hit;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        Debug.DrawRay(ray.origin, ray.direction * 500, Color.blue);
+
+        if (Physics.Raycast(ray, out hit, 500, layerMask, QueryTriggerInteraction.Ignore))
+        {
+            if (hit.point != currentLookTarget)
+            {
+                currentLookTarget = hit.point;
+            }
+
+            Vector3 targetPosition = new Vector3(hit.point.x, transform.position.y, hit.point.z);
+            Quaternion rotation = Quaternion.LookRotation(targetPosition - transform.position);
+            transform.rotation = Quaternion.Lerp(transform.rotation, rotation, Time.deltaTime * 10f);
+
+        }
+
+
+
+
+
+    }
+
+
+
+
+}

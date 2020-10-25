@@ -1,0 +1,90 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class Gamemanager : MonoBehaviour
+{
+    public static Gamemanager instance = null;
+    private bool gameactive = false;
+    private bool gameover = false;
+    public GameObject[] spwanpoints;
+    public GameObject[] prefebs;
+    private List<enemyhealth> enimesalive = new List<enemyhealth>();
+    private List<enemyhealth> enimeskilled = new List<enemyhealth>();
+    private Text currentlevel;
+    private float currentLevel = 1f;
+    private float currentEnemyOnScreen = 0f;
+   
+    public void registerenemy(enemyhealth enemy)
+    {
+        enimesalive.Add(enemy);
+    }
+    public void killedenemy(enemyhealth enemy)
+    {
+        enimeskilled.Add(enemy);
+    }
+  
+    
+    public bool gameOver
+    {
+        get { return gameover; }
+    }
+    public bool gameActive
+    {
+        get { return gameactive; }
+    }
+  
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+
+        }
+        else if (instance != this)
+        {
+            Destroy(gameObject);
+        }
+        DontDestroyOnLoad(gameObject);
+    }
+
+    void Start()
+    {
+        
+    }
+
+   
+    void Update()
+    {
+        
+    }
+    public void playerInGame()
+    {
+        gameactive = true;
+
+    }
+   
+    public void playerIsDead()
+    {
+        
+        gameover = true;
+    }
+    IEnumerator spawnenemy()
+    {
+        if (currentEnemyOnScreen < currentLevel)
+        {
+            if (enimesalive.Count < currentLevel * 2)
+            {
+                int enemynumber = Random.Range(0, 3);
+                GameObject spwanPlace = spwanpoints[Random.Range(0, 3)];
+                if (enemynumber == 0)
+                {
+                    newEnemy = Instantiate(prefebs[0]) as GameObject;
+                }
+                
+
+            }
+        }
+    }
+}

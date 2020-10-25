@@ -1,0 +1,103 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.AI;
+
+public class enemyhealth : MonoBehaviour
+{
+    public float enemyHealth = 100f;
+    private Animator ani;
+    private float currentHealth;
+    private ParticleSystem orcBlood;
+    private NavMeshAgent nav;
+    private static bool enemyalive = true;
+    private bool enemyDisapears = false;
+    
+    private CapsuleCollider capsule;
+    private Rigidbody rb;
+    public static bool enemyAlive
+    {
+        get { return enemyalive; }
+    }
+    
+    
+    
+    private Animator heroani;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        currentHealth = enemyHealth;
+        Gamemanager.instance.registerenemy(this);
+        ani = GetComponent<Animator>();
+        orcBlood = GetComponentInChildren<ParticleSystem>();
+        nav = GetComponent<NavMeshAgent>();
+        
+        rb = GetComponent<Rigidbody>();
+        capsule = GetComponent<CapsuleCollider>();
+        
+
+
+
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if()
+        
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!Gamemanager.instance.gameOver)
+        {
+            if (other.tag == "hero")
+            {
+                takehit();
+            }
+
+        }
+        
+    }
+    void takehit()
+    {
+        if (currentHealth > 0)
+        {
+            currentHealth -= 10;
+            ani.Play("hurt");
+
+        }
+        if (currentHealth <= 0)
+        {
+            
+            
+            enemyalive = false;
+            
+            killenemy();
+            Gamemanager.instance.killedenemy(this);
+        }
+        print(currentHealth);
+        
+
+    }
+    void killenemy()
+    {
+        nav.enabled = false;
+        capsule.enabled = false;
+        ani.Play("die");
+        rb.isKinematic = true;
+        StartCoroutine(enemyvanish());
+        
+
+    }
+   IEnumerator enemyvanish()
+   
+   {
+        
+   }
+
+
+
+
+}
